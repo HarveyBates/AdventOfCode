@@ -17,8 +17,26 @@ std::vector<int> get_input(std::string fileName){
 	return input;
 }
 
+int jolts(std::vector<int> input){
+	// Part 1 (Answer 1755)
+	std::sort(input.begin(), input.end());
+	int oneJolt = 1, threeJolt = 1; 
+	for(int i=0; i < input.size(); i++){
+		if(input[i+1] - input[i] == 3){
+			threeJolt++;
+		}
+		else if(input[i+1] - input[i] == 1){
+			oneJolt++;
+		}
+	}
+	printf("%d %d\n", oneJolt, threeJolt);
+	return oneJolt * threeJolt;
+}
+
+
 int main(){
 	std::vector<int> input = get_input("input_day10.txt");
-	printf("%d\n", input[0]);
+	int maxVal = jolts(input);
+	printf("%d\n", maxVal);
 	return 0;
 }
