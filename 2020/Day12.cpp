@@ -30,50 +30,65 @@ int manhattan_distance(std::vector<std::pair<char, int>> input){
 
 		switch(direction){
 			case 'F':
-				if(heading == 0){
-					nsPos += distance;
+				switch(heading){
+					case 0:
+						nsPos += distance;
+						break;
+					case 360:
+						nsPos = 0;
+						nsPos += distance;
+						break;
+					case 180:
+						nsPos -= distance;
+						break;
+					case 90:
+						ewPos += distance;
+						break;
+					case 270:
+						ewPos -= distance;
+						break;
 				}
-				else if(heading == 90){
-					ewPos += distance;
-				}
-				else if(heading == 180){
-					nsPos -= distance;
-				}
-				else if(heading == 270){
-					ewPos -= distance;
-				}
-
+				break;
 			case 'N':
-				heading = 0;
 				nsPos += distance;
+				break;
 			case 'S':
-				heading = 180;
 				nsPos -= distance;
+				break;
 			case 'E':
-				heading = 90;
 				ewPos += distance;
+				break;
 			case 'W':
-				heading = 270;
 				ewPos -= distance;
-			case 'L':
-				heading -= distance;
+				break;
 			case 'R':
 				heading += distance;
+				break;
+			case 'L':
+				heading -= distance;
+				break;
 		}
 
-		if(heading >= 360){
+		printf("%d\n", heading);
+
+		if(heading > 360){
 			heading -= 360;
 		}
-		else if(heading < 0){
+		else if(heading < -360){
 			heading += 360;
 		}
 
-		printf("Input: %c%d Heading: %d EWPos: %d NSPos: %d\n", 
-			direction, distance,  heading, ewPos, nsPos);
-	}
-	return nsPos + ewPos;
-}
+		nsPos = std::abs(nsPos);
+		ewPos = std::abs(ewPos);
+		heading = std::abs(heading);
 
+
+
+		printf("Input:%c%d\tHeading:%d\tEWPos:%d \tNSPos: %d\n", 
+			direction, distance,  heading, std::abs(ewPos), std::abs(nsPos));
+	}
+	return std::abs(nsPos) + std::abs(ewPos);
+}
 
 
 int main(){
