@@ -35,7 +35,7 @@ int manhattan_distance(std::vector<std::pair<char, int>> input){
 						nsPos += distance;
 						break;
 					case 360:
-						nsPos = 0;
+						heading = 0;
 						nsPos += distance;
 						break;
 					case 180:
@@ -69,23 +69,15 @@ int manhattan_distance(std::vector<std::pair<char, int>> input){
 				break;
 		}
 
-		printf("%d\n", heading);
-
 		if(heading > 360){
 			heading -= 360;
 		}
-		else if(heading < -360){
+		else if(heading < 0){
 			heading += 360;
 		}
 
-		nsPos = std::abs(nsPos);
-		ewPos = std::abs(ewPos);
-		heading = std::abs(heading);
-
-
-
 		printf("Input:%c%d\tHeading:%d\tEWPos:%d \tNSPos: %d\n", 
-			direction, distance,  heading, std::abs(ewPos), std::abs(nsPos));
+			direction, distance,  heading, ewPos, nsPos);
 	}
 	return std::abs(nsPos) + std::abs(ewPos);
 }
