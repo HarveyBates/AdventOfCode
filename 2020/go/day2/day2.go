@@ -15,7 +15,7 @@ func SolveOne(rows []string) {
 	var max int
 	var letter byte
 	var chars string
-	valid := 0
+	var valid int = 0
 	for _, row := range rows {
 		for index, val := range strings.Split(row, " ") {
 			if (index == 0) {
@@ -39,12 +39,39 @@ func SolveOne(rows []string) {
 			valid++
 		}
 	}
-	fmt.Println(valid)
+	fmt.Println("Part 1: ", valid)
 }
 
 
-//func SolveTwo(nums []int) int {
-//}
+func SolveTwo(rows []string){
+	var posOne int
+	var posTwo  int
+	var letter byte
+	var chars string
+	var count int = 0
+	for _, row := range rows {
+		for index, val := range strings.Split(row, " ") {
+			if (index == 0) {
+				minMax := strings.Split(val, "-")
+				posOne, _ = strconv.Atoi(minMax[0])
+				posTwo , _ = strconv.Atoi(minMax[1])
+			} else if (index == 1) {
+				letter = val[0]
+			} else if (index == 2) {
+				chars = val
+			}
+		}
+
+		if(byte(chars[posOne - 1]) == letter && byte(chars[posTwo - 1]) != letter) {
+			count++
+		}
+		if(byte(chars[posOne - 1]) != letter && byte(chars[posTwo - 1]) == letter) {
+			count++
+		}
+			
+ 	}
+	fmt.Println("Part 2: ", count)
+}
 
 
 
@@ -66,10 +93,8 @@ func main() {
 	}
 
 	SolveOne(rows)
-	//fmt.Println(answerOne)
 
-	//answerTwo := SolveTwo(nums)
-	//fmt.Println(answerTwo)
+	SolveTwo(rows)
 
 	if err := scanner.Err(); err != nil {
 		log.Fatal(err)
