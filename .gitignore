@@ -41,6 +41,7 @@ CppProperties.json
 *.exe
 *.out
 *.app
+main
 
 # Cmake 
 CMakeLists.txt.user
