@@ -19,15 +19,13 @@ std::vector<std::string> get_input(std::string fileName){
 
 int accumulator(std::vector<std::string> instructions){
 	int acc = 0;
-	bool initial_loop = false;
-	int initial_acc = -1;
-	// int incre = 0;
+	int initial_acc = stoi(instructions[1].substr(5,instructions[0].length()));
+	int incre = 0;
+	bool first = true;
 	for(int i=0; i < instructions.size(); i++){
-		if(i == initial_acc){
-			break;
-		}
+
 		std::string instruct = instructions[i].substr(0, 3);
-		std::string value = instructions[i].substr(5, 7);
+		std::string value = instructions[i].substr(5, instructions[i].length());
 		char op = instructions[i][4];
 		
 		if(instruct == "jmp"){
@@ -40,10 +38,6 @@ int accumulator(std::vector<std::string> instructions){
 		}
 
 		else if(instruct == "acc"){
-			if(!initial_loop){
-				initial_loop = true;
-				initial_acc = i;
-			}
 			if(op == '+'){
 				acc += stoi(value);
 			}
@@ -51,18 +45,22 @@ int accumulator(std::vector<std::string> instructions){
 				acc -= stoi(value);
 			}
 		}
-		// if(incre >= 10){
-		// 	break;
-		// }
-		// incre++;
-		printf("%s %c %d Acc=%d %d\n", instruct.c_str(), op, stoi(value), acc, i);
+
+		if (i == initial_acc && !first){
+			break;
+		}
+		first = false;
+
+		printf("Index: %d %s %c %d Acc=%d %d\n", incre, instruct.c_str(), op, stoi(value), acc, i+1);
+		incre++;
+
 	}
 	return acc;
 }
 
 
 int main(){
-	std::vector<std::string> instructions = get_input("input_day8.txt");
+	std::vector<std::string> instructions = get_input("../input_day8.txt");
 	int acc = accumulator(instructions);
 	printf("%d\n", acc);
 }
