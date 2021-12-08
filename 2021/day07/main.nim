@@ -5,10 +5,10 @@ import std/algorithm
 var positions = readFile("input.txt").strip().split(',').map(parseInt)
 
 positions.sort()
-var mid = int(len(positions) / 2)
+var median = int(len(positions) / 2)
 
 proc solve_one(): int = 
-  var aimValue = positions[mid]
+  var aimValue = positions[median]
   for pos in positions:
     var newPos = pos
     while (newPos > aimValue):
