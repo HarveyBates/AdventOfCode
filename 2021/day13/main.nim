@@ -16,9 +16,48 @@ for coord in rows:
   if X > xExtent:
     xExtent = X
 
+
+proc fold_up(fold: int, input: seq[string]): seq[string] =
+  var output = input
+  var rStart = len(output)
+  for i, row in enumerate(output):
+    if i >= fold:
+      var ii = i - fold 
+      for x, c in enumerate(output[rStart-1]):
+        if output[ii][x] != '#':
+          output[ii][x] = c
+      dec(rStart)
+    else:
+      for x, c in enumerate(row):
+        output[i][x] = c
+
+  output.delete(fold..len(output)-1)
+
+  return output 
+
+
+proc fold_left(fold: int, input: seq[string]): seq[string] = 
+  var output = input
+  for i, row in enumerate(output):
+    var ii = len(output[0]) - 1
+    var xx = 0
+    for x, c in row:
+      if x > (fold-1):
+        if output[i][ii] == '#':
+          output[i][xx] = '#'
+        dec(ii)
+        inc(xx)
+      else:
+        output[i][x] = c
+
+  for i, row in enumerate(output):
+    output[i].delete(int((len(output[i])-1)/2)..len(output[i])-1)
+
+  return output
+
+
 proc solve_one(): int = 
-  var fold = 7 # Y
-  var initial = newSeq[string]()
+  var input = newSeq[string]()
   for y in 0..yExtent:
     var d = ""
     for x in 0..xExtent:
@@ -30,50 +69,30 @@ proc solve_one(): int =
         d = d & '#'
       else:
         d = d & '.'
-    initial.add(d)
+    input.add(d)
 
-  var output: array[8, array[11, char]]
+  input = fold_left(655, input)
 
-  # Fold up
-  var rStart = len(initial)
-  for i, row in enumerate(initial):
-    if i >= 7:
-      var ii = i - 7
-      for x, c in enumerate(initial[rStart-1]):
-        if output[ii][x] != '#':
-          output[ii][x] = c
-      dec(rStart)
-    else:
-      for x, c in enumerate(row):
-        output[i][x] = c
-
-
-  for i, o in enumerate(output):
+  for i, o in enumerate(input):
     for c in o:
       if c == '#':
         inc(result)
-    echo i, " ", o
 
-  var xOutput: array[8, array[5, char]]
+  input = fold_up(447, input)
+  input = fold_left(327, input)
+  input = fold_up(223, input)
+  input = fold_left(163, input)
+  input = fold_up(111, input)
+  input = fold_left(81, input)
+  input = fold_up(55, input)
+  input = fold_left(40, input)
+  input = fold_up(27, input)
+  input = fold_up(13, input)
+  input = fold_up(6, input)
 
-  # Fold left
-  for i, row in enumerate(output):
-    var ii = 0
-    for x, c in row:
-      if x >= 5 and ii < 5:
-        if xOutput[i][ii] != '#':
-          xOutput[i][ii] = c
-        else:
-          xOutput[i][ii] = 'P'
-        inc(ii)
-      elif x < 4:
-        xOutput[i][x] = c
-
-  for i, o in enumerate(xOutput):
+  for i, o in enumerate(input):
     echo i, " ", o
 
 
 echo solve_one()
-  
-
 
