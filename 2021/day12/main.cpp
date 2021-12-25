@@ -3,123 +3,112 @@
 #include <fstream>
 #include <string>
 #include <sstream>
-#include <queue>
 #include <map>
 
+std::map<std::string, std::vector<std::string>> routes;
 
-struct Tunnel {
-	std::string cave1;
-	std::string cave2;
-};
-
-std::vector<Tunnel> readFile(std::string filename){
-	std::vector<Tunnel> tunnels;
+std::map<std::string, std::vector<std::string>> readFile(std::string filename){
+	std::map<std::string, std::vector<std::string>> routes;
 	std::ifstream txtfile(filename, std::ios::in);
 	if(txtfile.is_open()){
 		std::string tmp;
 		while(getline(txtfile, tmp)){
 			std::replace(tmp.begin(), tmp.end(), '-', ' ');
 			std::stringstream ss(tmp);
-			std::string tmp2;
+			std::string cave;
 			std::vector<std::string> caves;
-			while (ss >> tmp2){
-				caves.push_back(tmp2);
+			while (ss >> cave){
+				caves.push_back(cave);
 			}
-			Tunnel t;
-			t.cave1 = caves[0];
-			t.cave2 = caves[1];
-			tunnels.push_back(t);
+			if(routes.find(caves[0]) == routes.end()){
+				routes[caves[0]].push_back(caves[1]);
+			}
+			else{
+				routes[caves[0]].push_back(caves[1]);
+			}
+			if(routes.find(caves[1]) == routes.end()){
+				routes[caves[1]].push_back(caves[0]);
+			}
+			else{
+				routes[caves[1]].push_back(caves[0]);
+			}
 		}
 		txtfile.close();
 	}
-	return tunnels;
+
+	//	Debug input
+//	for(const auto& [key, value] : routes){
+//		printf("%s: ", key.c_str());
+//		for(const auto &n : value){
+//			printf("%s ", n.c_str());
+//		}
+//		printf("\n");
+//	}
+
+	return routes;
 }
-
-struct Routes {
-	bool visited;
-	std::vector<std::string> neighbours;
-};
-
 
 std::vector<std::vector<std::string>> paths;
-std::map<std::string, Routes> routes;
-std::vector<std::string> cave;
 
-void visit(Routes route, std::string nodeName){
+void visit(std::string cave, 
+		std::vector<std::string> neighbours, 
+		std::vector<std::string> currentPath, 
+		bool &caveTwice){
 
+	currentPath.push_back(cave);
 
-	cave.push_back(nodeName);
-	// Check if lowercase
-	for(const auto& c : nodeName){
-		if(std::islower(c)){
-			routes[nodeName].visited = true;
-			break;
-		}
+	if(cave == "end"){
+		paths.push_back(currentPath);
+		return;
 	}
 	
-	for(const auto& node : route.neighbours){
-		if(node == "end"){
-			cave.push_back(node);
-			break;
+	for(const auto& node : neighbours){
+
+		if(node == "start"){
+			continue;
 		}
-		if(!routes[node].visited){
-			visit(routes[node], node);
-			cave.push_back(node);
+
+		bool lower = false;
+		// Check if lowercase
+		for(const auto& c : node){
+			if(std::islower(c)){
+				lower = true;
+				break;
+			}
+		}
+
+		if(!lower || std::find(currentPath.begin(), currentPath.end(), node) == currentPath.end()){
+			visit(node, routes[node], currentPath, caveTwice);
+			std::remove(currentPath.end() - 1, currentPath.end(), node);
 		}
 	}
-
-	for(const auto& p : cave){
-		printf("%s ", p.c_str());
-	}
-	printf("\n\n");
-
-	paths.push_back(cave);
-	cave.clear();
-
 }
 
 
-int solve_one(std::vector<Tunnel> &tunnels){
+int solve_one(std::map<std::string, std::vector<std::string>> &routes){
 
-	for(int i = 0; i < tunnels.size(); i++){
-		std::string caveOne = tunnels[i].cave1;
-		std::string caveTwo = tunnels[i].cave2;
-		if(routes.find(caveOne) == routes.end()){
-			std::vector<std::string> neighbours;
-			for(int x = 0; x < tunnels.size(); x++){
-				if(caveOne == tunnels[x].cave1){
-					neighbours.push_back(tunnels[x].cave2);
-				}
-				else if (caveOne == tunnels[x].cave2){
-					neighbours.push_back(tunnels[x].cave1);
-				}
+	std::vector<std::string> currentPath;
+	bool caveTwice = false;
+
+	visit("start", routes["start"], currentPath, caveTwice);
+
+	for(const auto& p: paths){
+		for(const auto& r : p){
+			if(r.length() != 0){
+				printf("%s ", r.c_str());
 			}
-			routes[caveOne] = {false, neighbours};
 		}
-		if(routes.find(caveTwo) == routes.end()){
-			std::vector<std::string> neighbours;
-			for(int x = 0; x < tunnels.size(); x++){
-				if(caveTwo == tunnels[x].cave1){
-					neighbours.push_back(tunnels[x].cave2);
-				}
-				else if (caveTwo == tunnels[x].cave2){
-					neighbours.push_back(tunnels[x].cave1);
-				}
-			}
-			routes[caveTwo] = {false, neighbours};
-		}
+		printf("\n");
 	}
 
-	visit(routes["start"], "start");
-
-	return 0;
+	return paths.size();
 }
 
 
 
 int main(){
-	std::vector<Tunnel> tunnels = readFile("input.txt");
-	int answerOne = solve_one(tunnels);
-	//printf("%d\n", answerOne);
+	routes = readFile("input.txt");
+	int answerOne = solve_one(routes);
+	printf("%d\n", answerOne);
 	return 0;
 }
