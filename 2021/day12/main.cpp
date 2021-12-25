@@ -6,6 +6,7 @@
 #include <map>
 
 std::map<std::string, std::vector<std::string>> routes;
+std::vector<std::vector<std::string>> paths;
 
 std::map<std::string, std::vector<std::string>> readFile(std::string filename){
 	std::map<std::string, std::vector<std::string>> routes;
@@ -36,19 +37,9 @@ std::map<std::string, std::vector<std::string>> readFile(std::string filename){
 		txtfile.close();
 	}
 
-	//	Debug input
-//	for(const auto& [key, value] : routes){
-//		printf("%s: ", key.c_str());
-//		for(const auto &n : value){
-//			printf("%s ", n.c_str());
-//		}
-//		printf("\n");
-//	}
-
 	return routes;
 }
 
-std::vector<std::vector<std::string>> paths;
 
 void visit(std::string cave, 
 		std::vector<std::string> neighbours, 
@@ -64,10 +55,6 @@ void visit(std::string cave,
 	
 	for(const auto& node : neighbours){
 
-		if(node == "start"){
-			continue;
-		}
-
 		bool lower = false;
 		// Check if lowercase
 		for(const auto& c : node){
@@ -81,34 +68,41 @@ void visit(std::string cave,
 			visit(node, routes[node], currentPath, caveTwice);
 			std::remove(currentPath.end() - 1, currentPath.end(), node);
 		}
+		// Comment out for part one
+		else if(lower && !caveTwice && node != "start"){
+			caveTwice = true;
+			visit(node, routes[node], currentPath, caveTwice);
+			std::remove(currentPath.end() - 1, currentPath.end(), node);
+			caveTwice = false;
+		}
 	}
 }
 
 
-int solve_one(std::map<std::string, std::vector<std::string>> &routes){
+int solve(std::map<std::string, std::vector<std::string>> &routes){
 
 	std::vector<std::string> currentPath;
 	bool caveTwice = false;
 
 	visit("start", routes["start"], currentPath, caveTwice);
 
-	for(const auto& p: paths){
-		for(const auto& r : p){
-			if(r.length() != 0){
-				printf("%s ", r.c_str());
-			}
-		}
-		printf("\n");
-	}
+	// Debug
+//	for(const auto& p: paths){
+//		for(const auto& r : p){
+//			if(r.length() != 0){
+//				printf("%s ", r.c_str());
+//			}
+//		}
+//		printf("\n");
+//	}
 
 	return paths.size();
 }
 
 
-
 int main(){
 	routes = readFile("input.txt");
-	int answerOne = solve_one(routes);
-	printf("%d\n", answerOne);
+	int answer = solve(routes);
+	printf("%d\n", answer);
 	return 0;
 }
