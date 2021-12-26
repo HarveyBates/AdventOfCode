@@ -8,6 +8,7 @@
 std::map<std::string, std::vector<std::string>> routes;
 std::vector<std::vector<std::string>> paths;
 
+
 std::map<std::string, std::vector<std::string>> readFile(std::string filename){
 	std::map<std::string, std::vector<std::string>> routes;
 	std::ifstream txtfile(filename, std::ios::in);

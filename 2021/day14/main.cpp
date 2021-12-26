@@ -5,14 +5,9 @@
 #include <sstream>
 #include <map>
 
-struct Rules {
-	std::string characters;
-	char insertion;
-};
 
-
-std::vector<Rules> readFile(std::string filename){
-	std::vector<Rules> rules;
+std::map<std::string, char> readFile(std::string filename){
+	std::map<std::string, char> rules;
 	std::ifstream txtfile(filename, std::ios::in);
 	if(txtfile.is_open()){
 		std::string tmp;
@@ -23,57 +18,106 @@ std::vector<Rules> readFile(std::string filename){
 			while (ss >> tmp2){
 				parts.push_back(tmp2);
 			}
-			Rules r;
-			r.characters = parts[0];
-			r.insertion = parts[2][0];
-			rules.push_back(r);
+			rules[parts[0]] = parts[2][0];
 		}
 		txtfile.close();
 	}
 	return rules;
 }
 
-int solve_one(std::vector<Rules>& rules){
+
+long solve_two(std::map<std::string, char> &rules){
 	std::string pTemp = "KHSSCSKKCPFKPPBBOKVF";
 
-	std::string tmp = pTemp;
-	for(int i = 0; i < 10; i++){
-		for (int p = pTemp.length()-1; p >= 0; p--){
-			for (int r = 0; r < rules.size(); r++){
-				if (pTemp[p] == rules[r].characters[0] && pTemp[p+1] == rules[r].characters[1]){
-					// Match - append to insertion array
-					tmp.insert(p+1, std::string(1, rules[r].insertion));
+	std::map<std::string, long> occ; // Occurances
+
+	for(const auto &[key, value] : rules){
+		occ[key] = 0;
+	}
+
+	// Find occurances 
+	for(int i = 0; i < pTemp.length()-1; i++){
+		std::string cmb = std::string() + pTemp[i] + pTemp[i+1];
+		occ[cmb] += 1;
+	}
+
+	std::map<std::string, long> tmpOcc;
+	for(int l = 0; l < 10; l++){
+		for(const auto &[key, value] : occ){
+			if(value > 0){
+				std::string newLeft = std::string() + key[0] + rules[key];
+				std::string newRight = std::string() + rules[key] + key[1];
+				tmpOcc[newLeft] += value;
+				tmpOcc[newRight] += value;
+				if(tmpOcc.find(key) != tmpOcc.end()){
+					tmpOcc[key] -= value;
+				}
+				else{
+					tmpOcc[key] = 0;
 				}
 			}
+			if(tmpOcc.find(key) == tmpOcc.end()){
+				tmpOcc[key] = 0;
+			}
 		}
-		pTemp = tmp;
+
+		for(const auto &[key, value] : occ){
+			occ[key] = tmpOcc[key];
+			tmpOcc[key] = occ[key];
+			//printf("%s = %ld\n", key.c_str(), occ[key]);
+		}
+		//printf("\n");
+
 	}
 
-	// Evaluate - occurances
-	int maxOcc = std::count(pTemp.begin(), pTemp.end(), 'N');
-	int minOcc = std::count(pTemp.begin(), pTemp.end(), 'N');
-	std::vector<char> pTempChars(pTemp.begin(), pTemp.end());
-	std::vector<char> checked;
-	for(int i = 0; i < pTempChars.size(); i++){
-		if (find(checked.begin(), checked.end(), pTempChars[i]) == checked.end()){
-			int occ = std::count(pTemp.begin(), pTemp.end(), pTempChars[i]);
-			if (occ > maxOcc){
-				maxOcc = occ;
-			}
-			if (occ < minOcc){
-				minOcc = occ;
-			}
-			checked.push_back(pTempChars[i]);
+	std::vector<char> uChar;
+	for(const auto &[key, value] : occ){
+		if(std::find(uChar.begin(), uChar.end(), key[0]) == uChar.end()){
+			uChar.push_back(key[0]);
+		}
+		if(std::find(uChar.begin(), uChar.end(), key[1]) == uChar.end()){
+			uChar.push_back(key[1]);
 		}
 	}
 
-	return maxOcc - minOcc;
+	for(const auto& c : uChar){
+		printf("%c", c);
+	}
+	printf("\n");
+
+	long sumMax = 0;
+	long sumMin = 0;
+	bool sumSet = false;
+	for(const auto& c : uChar){
+		long sum = 0;
+		for(const auto &[key, value] : occ){
+			if(key[0] == c || (key[0] == c && key[1] == c)){
+				sum += value;
+			}
+		}
+		if(!sumSet){
+			sumMax = sum + 1;
+			sumMin = sum;
+			sumSet = true;
+		}
+		else{
+			if(sum > sumMax){
+				sumMax = sum;
+			}
+			if(sum < sumMin){
+				sumMin = sum;
+			}
+		}
+	}
+	printf("Min: %ld Max: %ld\n", sumMin, sumMax);
+
+	return sumMax - sumMin;
 }
 
 
 int main(){
-	std::vector<Rules> rules = readFile("input.txt");
-	int p1 = solve_one(rules);
-	std::cout << p1 << std::endl;
+	std::map<std::string, char> rules = readFile("input.txt");
+	long p2 = solve_two(rules);
+	printf("%ld\n", p2);
 	return 0;
 }

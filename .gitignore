@@ -9,6 +9,9 @@ CppProperties.json
 *.swp
 *.*.swp
 
+# Debug files
+*.dSYM
+
 # Prerequisites
 *.d
 
@@ -57,3 +60,8 @@ CTestTestfile.cmake
 _deps
 lib
 bin
+
+# X-Code
+*.pbxproj
+*.xcworkspacedata
+*.plist
