@@ -27,28 +27,31 @@ std::map<std::string, char> readFile(std::string filename){
 
 
 long solve_two(std::map<std::string, char> &rules){
-	std::string pTemp = "KHSSCSKKCPFKPPBBOKVF";
+	std::string pTemp = "NCNBCHB";
 
 	std::map<std::string, long> occ; // Occurances
 
+	// Initalise rules
 	for(const auto &[key, value] : rules){
 		occ[key] = 0;
 	}
 
-	// Find occurances 
+	// Find occurances from initial string
 	for(int i = 0; i < pTemp.length()-1; i++){
 		std::string cmb = std::string() + pTemp[i] + pTemp[i+1];
 		occ[cmb] += 1;
 	}
 
 	std::map<std::string, long> tmpOcc;
-	for(int l = 0; l < 10; l++){
+	for(int l = 0; l < 9; l++){
 		for(const auto &[key, value] : occ){
 			if(value > 0){
 				std::string newLeft = std::string() + key[0] + rules[key];
 				std::string newRight = std::string() + rules[key] + key[1];
 				tmpOcc[newLeft] += value;
 				tmpOcc[newRight] += value;
+				// TODO need to handle cases where the new key is the same as the 
+				// inspected key
 				if(tmpOcc.find(key) != tmpOcc.end()){
 					tmpOcc[key] -= value;
 				}
@@ -63,10 +66,7 @@ long solve_two(std::map<std::string, char> &rules){
 
 		for(const auto &[key, value] : occ){
 			occ[key] = tmpOcc[key];
-			tmpOcc[key] = occ[key];
-			//printf("%s = %ld\n", key.c_str(), occ[key]);
 		}
-		//printf("\n");
 
 	}
 
@@ -79,11 +79,6 @@ long solve_two(std::map<std::string, char> &rules){
 			uChar.push_back(key[1]);
 		}
 	}
-
-	for(const auto& c : uChar){
-		printf("%c", c);
-	}
-	printf("\n");
 
 	long sumMax = 0;
 	long sumMin = 0;
