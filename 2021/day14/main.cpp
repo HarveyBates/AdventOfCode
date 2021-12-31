@@ -27,7 +27,7 @@ std::map<std::string, char> readFile(std::string filename){
 
 
 long solve_two(std::map<std::string, char> &rules){
-	std::string pTemp = "NCNBCHB";
+	std::string pTemp = "KHSSCSKKCPFKPPBBOKVF";
 
 	std::map<std::string, long> occ; // Occurances
 
@@ -43,17 +43,20 @@ long solve_two(std::map<std::string, char> &rules){
 	}
 
 	std::map<std::string, long> tmpOcc;
-	for(int l = 0; l < 9; l++){
+	for(int l = 0; l < 10; l++){
 		for(const auto &[key, value] : occ){
 			if(value > 0){
 				std::string newLeft = std::string() + key[0] + rules[key];
 				std::string newRight = std::string() + rules[key] + key[1];
 				tmpOcc[newLeft] += value;
 				tmpOcc[newRight] += value;
-				// TODO need to handle cases where the new key is the same as the 
-				// inspected key
 				if(tmpOcc.find(key) != tmpOcc.end()){
-					tmpOcc[key] -= value;
+					if(newLeft != key){
+						tmpOcc[key] -= value;
+					}
+					else if(newRight != key){
+						tmpOcc[key] -= value;
+					}
 				}
 				else{
 					tmpOcc[key] = 0;
