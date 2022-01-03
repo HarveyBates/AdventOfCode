@@ -97,6 +97,10 @@ void Input::second_wire(int xx, int yy){
 			case 'U':
 				dist = current_y + wire_two[i].distance;
 				for(int y = current_y; y < dist; y++){
+					if(y > yy || xx != current_x){
+						current_y = dist;
+						break;
+					}
 					check_overlap(xx, yy, current_x, y);
 				}
 				current_y = dist;
@@ -104,6 +108,10 @@ void Input::second_wire(int xx, int yy){
 			case 'D':
 				dist = current_y - wire_two[i].distance;
 				for(int y = current_y; y > dist; y--){
+					if(y < yy || xx != current_x){
+						current_y = dist;
+						break;
+					}
 					check_overlap(xx, yy, current_x, y);
 				}
 				current_y = dist;
@@ -111,6 +119,10 @@ void Input::second_wire(int xx, int yy){
 			case 'R':
 				dist = current_x + wire_two[i].distance;
 				for(int x = current_x; x < dist; x++){
+					if(x > xx || yy != current_y){
+						current_x = dist;
+						break;
+					}
 					check_overlap(xx, yy, x, current_y);
 				}
 				current_x = dist;
@@ -118,6 +130,10 @@ void Input::second_wire(int xx, int yy){
 			case 'L':
 				dist = current_x - wire_two[i].distance;
 				for(int x = current_x; x > dist; x--){
+					if(x < xx || yy != current_y){
+						current_x = dist;
+						break;
+					}
 					check_overlap(xx, yy, x, current_y);
 				}
 				current_x = dist;
