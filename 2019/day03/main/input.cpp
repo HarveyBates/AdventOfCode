@@ -21,7 +21,7 @@ int Input::num_of_values(const char* raw_string){
 }
 
 
-void Input::split(const char* raw_string, char delim, int wire){
+void Input::split(const char* raw_string, int wire){
 
 	Instruction instruction;
 
@@ -80,6 +80,8 @@ int Input::check_overlap(int x, int y, int xx, int yy){
 		}
 		if(sum < min_sum){
 			min_sum = sum;
+			Serial.print("Min Sum: ");
+			Serial.println(min_sum);
 		}
 	}
 	return NULL;
@@ -131,6 +133,7 @@ int Input::solve_one(){
 	int current_x = 0;
 	int current_y = 0;
 	for(int i = 0; i < kWireOneSize; i++){
+		Serial.println(i);
 		int dist = 0;
 		switch (wire_one[i].direction){
 			case 'U':

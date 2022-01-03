@@ -22,7 +22,7 @@ class Input {
 	public:
 		Input();
 		int num_of_values(const char* raw_string);
-		static void split(const char* raw_string, char delim, int wire);
+		static void split(const char* raw_string, int wire);
 
 		int check_overlap(int x, int y, int xx, int yy);
 		void second_wire(int xx, int yy);
@@ -34,4 +34,3 @@ class Input {
 
 
 #endif // INPUT_H_
-

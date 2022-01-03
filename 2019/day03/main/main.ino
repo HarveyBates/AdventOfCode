@@ -9,8 +9,8 @@ void setup(){
 	Serial.begin(9600);
 	delay(200);
 
-	Input::split(input_one, ',', 1);
-	Input::split(input_two, ',', 2);
+	Input::split(input_one, 1);
+	Input::split(input_two, 2);
 //	input.inspect(1);
 //	Serial.println(" ");
 //	input.inspect(2);
