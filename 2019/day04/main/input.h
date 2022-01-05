@@ -3,11 +3,15 @@
 
 #include <Arduino.h>
 
+template <size_t n>
+
 class Input {
 
 	public:
 		Input();
-		bool check_match(char *match, char c);
+		//inline int test(int x, int y) return x + y;
+		bool check_match(char (&match)[n], char c);
+		//bool check_match(char *match, char c);
 		long solve_one();
 		int solve_two();
 };
