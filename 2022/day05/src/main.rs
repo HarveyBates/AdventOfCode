@@ -27,17 +27,29 @@ mod solve {
 
     pub fn part_one(input: &Vec<String>, input2: &Vec<String>){
 
-        const height: usize = 4;
-        const width: usize = 3;
-        let mut crates: [[char; width]; height] = [[' '; width]; height];
+        const BORDER_BUFFER: usize = 42;
+        const HEIGHT: usize = 9 + BORDER_BUFFER;
+        const WIDTH: usize = 9 + BORDER_BUFFER;
+        let mut crates: [[char; WIDTH]; HEIGHT] = [[' '; WIDTH]; HEIGHT];
 
         for (y, row) in input.iter().enumerate() {
             let columns = row.split_whitespace();
             for (x, column) in columns.enumerate() {
-                if !column.contains("X") {
-                    crates[x][y] = column.chars().nth(1).unwrap();
-                } 
+                let letter = column.chars().nth(1).unwrap();
+                if letter != 'X'{
+                    crates[x][y + BORDER_BUFFER] = letter;
+                } else {
+                    crates[x][y + BORDER_BUFFER] = ' ';
+                }
             }
+        }
+
+        // Visualise
+        for y in BORDER_BUFFER-2..HEIGHT {
+            for x in 0..WIDTH - BORDER_BUFFER {
+                print!("[{}] ", crates[x][y]);
+            }
+            println!();
         }
 
         let mut movements: Vec<i32> = Vec::new();
@@ -45,7 +57,7 @@ mod solve {
         let mut to_positions: Vec<i32> = Vec::new();
 
         for line in input2.iter(){
-            let mut parts = line.split_whitespace();
+            let parts = line.split_whitespace();
             for (i, part) in parts.enumerate(){
                 if i == 1 {
                     movements.push(part.parse::<i32>().expect("Parse error"));
@@ -60,42 +72,51 @@ mod solve {
         }
 
         for (i, mov) in movements.iter().enumerate() {
-            let from = from_positions[i] as usize;
-            let to = to_positions[i] as usize;
+            let from = (from_positions[i] - 1) as usize;
+            let to = (to_positions[i] - 1) as usize;
+            println!("move {mov} from {from} to {to}");
             // Move
-            for m in 0..*mov {
+            for _m in 0..*mov {
                 // From
                 let mut from_top = 0;
-                for y in crates[from-1] {
+                for y in crates[from] {
                     if y != ' ' {
                         // To
                         let mut to_top = 0;
                         let mut exit = false;
-                        for y2 in crates[to-1] {
+                        for y2 in crates[to] {
                             if y2 != ' ' {
-                                crates[to-1][to_top-1] = y;
-                                crates[from-1][from_top] = ' ';
+                                crates[to][to_top-1] = y;
+                                crates[from][from_top] = ' ';
+                                exit = true;
+                                break;
+                            }
+                            else if to_top == (HEIGHT - 1) {
+                                crates[to][to_top] = y;
+                                crates[from][from_top] = ' ';
                                 exit = true;
                                 break;
                             }
                             to_top += 1;
                         }
-                        if exit { break; }
+                        if exit {
+                            break;
+                        }
                     }
                     from_top += 1;
                 }
             }
-        }
-        println!("");
-        
-        // Visualise
-        for y in 0..height {
-            for x in 0..width {
-                print!("[{}] ", crates[x][y]);
-            }
-            println!("");
-        }
 
+            println!();
+
+            // Visualise
+            for y in BORDER_BUFFER-2..HEIGHT {
+                for x in 0..WIDTH - BORDER_BUFFER {
+                    print!("[{}] ", crates[x][y]);
+                }
+                println!();
+            }
+        }
     }
 
 }

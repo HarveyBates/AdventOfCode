@@ -10,8 +10,8 @@ struct Instruction {
 
 class Input {
 
-	static const int kWireOneSize = 301;
-	static const int kWireTwoSize = 301;
+	static const int kWireOneSize = 4;
+	static const int kWireTwoSize = 4;
 
 	static Instruction wire_one[kWireOneSize];
 	static Instruction wire_two[kWireTwoSize];

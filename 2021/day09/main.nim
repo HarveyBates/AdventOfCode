@@ -3,8 +3,8 @@ import std/[strutils, sequtils, enumerate, algorithm]
 var heightmap = readFile("input.txt").strip().splitLines()
 
 var heights = newSeq[seq[int]]()
-for height in heightmap:
-  var values = height.map(proc(x: char): int = ($x).parseInt)
+for HEIGHT in heightmap:
+  var values = HEIGHT.map(proc(x: char): int = ($x).parseInt)
   heights.add(@[values])
 
 var visited = newSeq[tuple[x: int, y: int]]()
