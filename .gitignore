@@ -12,6 +12,8 @@ CppProperties.json
 *.swp
 *.*.swp
 
+.idea
+
 # Debug files
 *.dSYM
 
