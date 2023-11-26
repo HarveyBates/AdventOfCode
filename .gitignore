@@ -12,6 +12,8 @@ CppProperties.json
 *.swp
 *.*.swp
 
+dist-newstyle
+
 .idea
 
 # Debug files
