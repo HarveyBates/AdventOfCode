@@ -34,16 +34,4 @@ void solve(FILE *file) {
   printf("Part 1: %d\nPart 2: %d\n", sums[idx - 1], top_three);
 }
 
-int main() {
-
-  const char *filename = "input.txt";
-  FILE *file = fopen(filename, "r");
-  if (!file) {
-    return -1;
-  }
-
-  solve(file);
-
-  fclose(file);
-  return 0;
-}
+o
