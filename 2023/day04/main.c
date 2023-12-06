@@ -97,7 +97,6 @@ void solve_pt2(const char *filename) {
     for (int w = 0; w < winner_idx; w++) {
       for (int m = 0; m < my_hand_idx; m++) {
         if (winners[w] == my_hand[m]) {
-          int next_card = sc[current_sc + matches + 1];
           sc[current_sc + matches + 1] += sc[current_sc];
           matches++;
           break;
